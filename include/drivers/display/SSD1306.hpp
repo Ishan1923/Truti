@@ -7,7 +7,7 @@
 #include "hal/II2C.hpp"
 
 namespace drivers::display{
-    template <uint16_t ROWS, uint16_t COLS, uint16_t PAGES>
+    template <uint16_t ROWS, uint16_t COLS, uint16_t PAGES> // important: these things are defined in the SSD1306 datasheet and have to be fixed at compile time
     class SSD1306 : public IDISPLAY {
 
         private:
