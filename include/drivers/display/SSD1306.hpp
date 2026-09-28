@@ -8,7 +8,7 @@
 
 namespace drivers::display{
     template <uint16_t ROWS, uint16_t COLS, uint16_t PAGES> // important: these things are defined in the SSD1306 datasheet and have to be fixed at compile time
-    class SSD1306 : public IDISPLAY {
+    class SSD1306 : public IDISPLAY<ROWS, COLS, PAGES> {
 
         private:
             // Private members for SSD1306 specific implementation can be added here
@@ -42,18 +42,20 @@ namespace drivers::display{
 
             SSD1306(II2C& i2c) : i2c(i2c){}
 
-            DisplayStatus init() override;
+            typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus init() override;
 
-            DisplayStatus setPixel(
+            typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus setPixel(
                 uint16_t* matrix) override;
+
+            typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus drawPixel(uint16_t x, uint16_t y, uint16_t color) override;
             
-            DisplayStatus clear() override;
+            typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus clear() override;
 
-            DisplayStatus update(uint16_t* matrix) override;
+            typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus update(uint16_t* matrix) override;
 
-            DisplayStatus sendCommand(uint8_t cmd) override;
+            typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus sendCommand(uint8_t cmd) override;
 
-            DisplayStatus sendData(const uint8_t* data, size_t length) override;
+            typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus sendData(const uint8_t* data, size_t length) override;
 
     };
 

@@ -5,11 +5,12 @@
 
 #include "drivers/display/IDisplay.hpp"
 
+template <uint16_t ROWS, uint16_t COLS, uint16_t PAGES>
 class BlinkService
 {
     private:
 
-        IDISPLAY& display;
+        IDISPLAY<ROWS, COLS, PAGES>& display;
 
 
     public:
@@ -21,9 +22,9 @@ class BlinkService
             INVALID_ARGUMENTS
         };
 
-        BlinkService(IDISPLAY& display) : display(display) {}
+        BlinkService(IDISPLAY<ROWS, COLS, PAGES>& display) : display(display) {}
 
-        BlinkState blink(IDISPLAY* display, uint16_t x, uint16_t y, uint16_t delayMs);
+        BlinkState blink(IDISPLAY<ROWS, COLS, PAGES>* display, uint16_t x, uint16_t y, uint16_t delayMs);
 
 
 

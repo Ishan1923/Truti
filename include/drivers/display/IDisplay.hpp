@@ -6,7 +6,11 @@
 #include <cstdint>
 #include <cstddef>
 
+template <uint16_t ROWS, uint16_t COLS, uint16_t PAGES> // important: these things have to be fixed at compile time
 class IDISPLAY{
+
+protected:
+    uint8_t buffer[PAGES][COLS] = {0};
 
     public:
 
@@ -20,6 +24,8 @@ class IDISPLAY{
 
         virtual DisplayStatus setPixel(
             uint16_t* matrix) = 0;
+        
+        virtual DisplayStatus drawPixel (uint16_t x, uint16_t y, uint16_t color) = 0;
         
         virtual DisplayStatus clear() = 0;
 
