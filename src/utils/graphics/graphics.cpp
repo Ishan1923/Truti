@@ -62,7 +62,7 @@ void Graphics<ROWS, COLS, PAGES>::drawChar(uint16_t x, uint16_t y, char c, uint8
         uint8_t line = Font::fontData[offset + col];
 
         for (uint8_t row = 0; row < Font::height; ++row) {
-            if (line & 0x01) {
+            if (line & 0x01) {  // Change this to 0x01 (for LSB at the right hand side) or 0x80 (for MSB at the right hand side) (based on endianess)
                 if (size == 1) {
                     m_display.drawPixel(x + col, y + row, color);
                 }

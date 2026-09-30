@@ -12,6 +12,9 @@ namespace drivers::display{
 
         private:
             // Private members for SSD1306 specific implementation can be added here
+
+            uint8_t buffer[PAGES * COLS] = {0}; // 1024 bytes of local screen RAM
+
             enum class Command : uint8_t {
                 DisplayOff       = 0xAE,
                 SetClockDiv      = 0xD5,

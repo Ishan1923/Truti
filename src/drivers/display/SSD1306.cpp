@@ -62,41 +62,51 @@ namespace drivers::display {
     }
 
     template <uint16_t ROWS, uint16_t COLS, uint16_t PAGES>
-    typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus
-    SSD1306<ROWS, COLS, PAGES>::drawPixel(uint16_t x, uint16_t y, uint16_t color) {
-        if (x >= COLS || y >= ROWS) {
-            return IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus::INVALID_ARGUMENTS;
-        }
+    typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus SSD1306<ROWS, COLS, PAGES>::drawPixel(uint16_t x, uint16_t y, uint16_t color) {
+        if (x >= COLS || y >= ROWS) return IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus::INVALID_ARGUMENTS;
 
-        const uint16_t page = y / 8;
-        const uint16_t bit = y % 8;
+        uint16_t index = x + ((y / 8) * COLS);
+        uint8_t bit = y % 8;
 
         if (color) {
-            this->buffer[page][x] |= static_cast<uint8_t>(1u << bit);
+            buffer[index] |= (1 << bit);
         } else {
-            this->buffer[page][x] &= static_cast<uint8_t>(~(1u << bit));
+            buffer[index] &= ~(1 << bit);
         }
-
         return IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus::SUCCESS;
     }
 
-
     template <uint16_t ROWS, uint16_t COLS, uint16_t PAGES>
-    typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus
-    SSD1306<ROWS, COLS, PAGES>::clear() {
-        std::memset(this->buffer, 0, sizeof(this->buffer));
-        for (uint16_t page = 0; page < PAGES; ++page) {
-            sendData(this->buffer[page], COLS);
-        }
+    typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus SSD1306<ROWS, COLS, PAGES>::clear() {
+
+        // Instantly wipe the local RAM array with zeros
+        std::memset(buffer, 0, sizeof(buffer));
 
         return IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus::SUCCESS;
     }
 
     template <uint16_t ROWS, uint16_t COLS, uint16_t PAGES>
-    typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus
-    SSD1306<ROWS, COLS, PAGES>::update(uint16_t* matrix) {
-        clear();
-        setPixel(matrix);
+    typename IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus SSD1306<ROWS, COLS, PAGES>::update(uint16_t* matrix) {
+
+        // Reset pointers to the top-left of the screen
+        sendCommand(0x21); // Column Address
+        sendCommand(0x00);
+        sendCommand(COLS - 1);
+
+        sendCommand(0x22); // Page Address
+        sendCommand(0x00);
+        sendCommand(PAGES - 1);
+
+        // Send the buffer in safe 16-byte chunks!
+        for (uint16_t i = 0; i < sizeof(buffer); i += 16) {
+            uint8_t chunk[17];
+            chunk[0] = 0x40; // 0x40 means "Pixel Data follows"
+            std::memcpy(chunk + 1, &buffer[i], 16);
+
+            // Use your custom HAL to send the 17-byte chunk
+            i2c.write(SSD1306_Address, chunk, 17);
+        }
+
         return IDISPLAY<ROWS, COLS, PAGES>::DisplayStatus::SUCCESS;
     }
 
