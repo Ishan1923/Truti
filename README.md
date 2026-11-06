@@ -1,36 +1,82 @@
 # Truti
 
-A hobby project to build a free, fast, portable RTOS/OS for embedded systems; one that runs across a wide range of boards, peripherals, and displays, with a clean, modifiable architecture at the OS level.
+**An experimental embedded operating system and hardware abstraction
+framework for microcontrollers.**
 
-## Current status
+Truti is an ongoing project to build a lightweight, portable and
+modular operating system for embedded systems, starting with the
+ESP32.
 
-Early days. Right now this is a **WiFi-synced OLED clock** built from scratch on an ESP32, driving an SSD1306 display directly over I2C (no display libraries) via PlatformIO. This is the first real application built on top of what will eventually grow into the broader Truti platform.
+The goal is to develop an architecture where hardware, peripherals,
+system services and applications interact through well-defined
+abstractions, without tying the entire system to a particular
+microcontroller or hardware configuration.
 
-## Goals
+The long-term vision extends beyond a conventional RTOS: Truti aims
+to explore distributed embedded systems where multiple devices can
+expose capabilities, communicate and coordinate through a common
+software architecture.
 
-- **Portability** : run across a majority of embedded boards, not tied to one MCU family
-- **Display abstraction** : start with SSD1306 (I2C OLED), expand to other displays/monitors over time
-- **Peripheral abstraction** : a clean HAL so drivers plug in without rewriting application logic
-- **Animation & rendering** : beyond static text, support animated and designed UI on constrained displays
-- **RTOS core** : deterministic scheduling, small footprint, no unnecessary bloat
-- **Modifiable at the OS level** : core subsystems (scheduler, memory, drivers) should be swappable/configurable, not hardcoded assumptions
+---
 
-This is a long-term hobby project, scope and direction may shift as it goes. The clock is the starting point, not the destination.
+## Project Status
 
-## Structure (evolving)
+Truti is currently in its early development stage.
 
-```
-drivers/      # peripheral & display drivers (e.g. SSD1306)
-hal/          # hardware abstraction layer
-kernel/       # scheduler, core OS primitives (future)
-apps/         # applications built on top (e.g. clock)
-```
+The initial implementation focuses on establishing the hardware
+abstraction layer and building applications on top of it.
 
-## Building
+### Implemented
 
-Built and managed with [PlatformIO](https://platformio.org/).
+- Hardware abstraction layer for peripheral integration.
+- SSD1306 OLED display abstraction.
+- Direct I2C communication with the SSD1306 display, without relying
+  on external display libraries.
+- Initial WiFi-synchronised OLED clock application.
+- ESP32 development using PlatformIO.
 
-```bash
-pio run
-pio run --target upload
-```
+### In Progress
+
+- MPU6050 IMU integration.
+- Expansion of the peripheral abstraction layer.
+- Development of foundational operating system components.
+- Establishing a modular architecture for hardware services.
+
+### Planned
+
+- Portable hardware abstraction across different MCU families.
+- Memory management and resource management.
+- Task scheduling and execution management.
+- Modular driver and peripheral management.
+- Display rendering and animation framework.
+- Inter-process communication and system services.
+- Device-to-device communication and distributed services.
+- An extensible architecture for integrating intelligent agents.
+
+---
+
+## Architecture
+
+Truti is being designed around a modular architecture that separates
+hardware-specific implementations from system-level functionality.
+
+The intended architecture consists of the following layers:
+
+```text
++---------------------------------------+
+|             Applications              |
++---------------------------------------+
+|          System Services               |
++---------------------------------------+
+|       Kernel / OS Components           |
+|                                       |
+|  Scheduling | Memory | IPC | Resources |
++---------------------------------------+
+|     Hardware Abstraction Layer        |
++---------------------------------------+
+|       Peripheral Drivers              |
++---------------------------------------+
+|              Hardware                 |
+|                                       |
+|  ESP32 | Displays | Sensors | Modules |
++---------------------------------------+
