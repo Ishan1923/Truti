@@ -7,17 +7,17 @@ class Motion{
     protected:
 
         // acceleartion
-        double accX;    // longitudnal acceleration
-        double accY;    // lateral acceleration
-        double accZ;    // vertical acceleration
+        double accX = 0.0;    // longitudnal acceleration
+        double accY = 0.0;    // lateral acceleration
+        double accZ = 0.0;    // vertical acceleration
 
         // gyroscope - angular velocity
-        double gyroX;   // angular velocity around X-axis
-        double gyroY;   // angular velocity around Y-axis
-        double gyroZ;   // angular velocity around Z-axis
+        double gyroX = 0.0;   // angular velocity around X-axis
+        double gyroY = 0.0;   // angular velocity around Y-axis
+        double gyroZ = 0.0;   // angular velocity around Z-axis
 
         // Thermodynamic Temperature
-        double temperature; // temperature in degrees Celsius
+        double temperature = 0.0; // temperature in degrees Celsius
 
 
     public:
